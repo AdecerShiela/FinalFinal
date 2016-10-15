@@ -1,22 +1,36 @@
 {
   "surveys": [
     {
-      "name": "Diccion",
-      "color": "blue",
-      "movies": [
-        "harry potter"
-      ],
-      "gender": "male",
-      "id": 1
+      "name": "",
+      "color": "",
+      "movies": [],
+      "gender": "",
+      "show": false,
+      "id": 4
     },
     {
-      "name": "Diccion",
-      "color": "blue",
-      "movies": [
-        "harry potter"
-      ],
-      "gender": "male",
-      "id": 4
+      "name": "",
+      "color": "",
+      "movies": [],
+      "gender": "",
+      "show": false,
+      "id": 5
+    },
+    {
+      "name": "",
+      "color": "",
+      "movies": [],
+      "gender": "",
+      "show": true,
+      "id": 6
+    },
+    {
+      "name": "",
+      "color": "",
+      "movies": [],
+      "gender": "",
+      "show": true,
+      "id": 7
     }
   ]
 }
