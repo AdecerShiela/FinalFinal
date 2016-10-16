@@ -22,7 +22,12 @@ class App extends Component {
         movies: [],
         gender: "",
         records:[],
-        show: false
+        show: false,
+        selectedName: "",
+        selectedColor: "",
+        selectedMovies: [],
+        selectedGender: "",
+        seledtedId: ""
     };
 
     componentDidMount(){
@@ -55,6 +60,16 @@ class App extends Component {
         }
     };
 
+    modalonChange = (fieldName)=> {
+        return (event)=> {
+
+            console.log(event.target.value);
+            var state = this.state;
+            state[fieldName] = event.target.value;
+            this.setState(state);
+        }
+    };
+
     checkboxChange = (fieldName)=> {
         return (event)=> {
             var targetArray = this.state[fieldName];
@@ -72,10 +87,32 @@ class App extends Component {
         }
     };
 
+    modalcheckboxChange = (fieldName)=> {
+        return (event)=> {
+            var targetArray = this.state[fieldName];
+            if (targetArray.indexOf(event.target.value) >= 0)
+                targetArray.splice(
+                    targetArray.indexOf(event.target.value),
+                    1
+                );
+            else
+                targetArray.push(event.target.value);
+
+            var state = this.state.selectedMovies;
+            state[fieldName] = targetArray;
+            this.setState(state.selectedMovies);
+        }
+    };
+
 
     saveSurvey = ()=> {
 
-        var data = this.state;
+       
+        var data = {name: this.state.name,
+                    color: this.state.color,
+                    gender: this.state.gender,
+                    movies: this.state.movies};
+         console.log(data);
          delete data.records;
 
         httpClient.post('http://localhost:3004/surveys',
@@ -121,6 +158,62 @@ class App extends Component {
         };
     };
 
+    openModal = (id)=>{
+
+            return ()=>{
+                this.setState({
+                    show: true
+                })
+
+                 httpClient.get('http://localhost:3004/surveys/'+id)
+                .then((response)=> {
+                    var data = response.data
+                    this.setState({
+                        selectedName: data.name,
+                        selectedColor: data.color,
+                        selectedMovies: data.movies,
+                        selectedGender: data.gender,
+                        selectedId: data.id
+                    })
+                    console.log(this.state.selectedData.name);
+                }).catch((error)=>{
+                    
+                });
+
+            };
+        };
+
+    
+
+    saveEdit = (id) =>{
+
+
+        return () => {
+            console.log(data);
+            var data = {name: this.state.selectedName,
+                        color: this.state.selectedColor,
+                        gender: this.state.selectedGender,
+                        movies: this.state.selectedMovies};
+            delete data.records;
+
+            httpClient.patch('http://localhost:3004/surveys/'+id,
+            data)
+                .then((response)=> {
+                    this.refreshData();
+                }).catch((error)=> {
+
+                });
+
+            this.setState({
+                show: false,
+                selectedColor: "" ,
+                selectedGender: "" ,
+                selectedMovies: [] ,
+                selectedName: ""
+            });
+        }
+    };
+
 
     render() {
 
@@ -129,7 +222,7 @@ class App extends Component {
             return (
                 <tr key={i}>
                      <td><Button  bsStyle="warning" onClick={this.deleteItem(item.id)}>Delete</Button></td>
-                     <td><Button  bsStyle="warning"  onMouseUp={() => this.setState({ show: true})} onMouseDown={this.deleteItem(item.id)}>Edit</Button></td>
+                     <td><Button  bsStyle="warning" onClick={this.openModal(item.id)}>Edit</Button></td>
                      <td>{item.id}</td>
                      <td>{item.name}</td>
                      <td>{item.color}</td>
@@ -146,8 +239,10 @@ class App extends Component {
                 </tr>
             );
         });
+        
+        let close = () => this.setState({ show: false })
 
-        let close = () => this.setState({ show: false});
+
 
         return (
             <div className="container">
@@ -238,85 +333,74 @@ class App extends Component {
 
                 </div>
                  <div className="modal-container" style={{height: 200}}>
-        <Button
-          bsStyle="primary"
-          bsSize="large"
-          onClick={() => this.setState({ show: true})}
-        >
-          Launch contained modal
-        </Button>
+                    <Modal
+                    show={this.state.show}
+                    onHide={close}
+                    container={this}
+                    aria-labelledby="contained-modal-title"
+                    >
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title">Contained Modal</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <Form>
+                                                <FormGroup>
+                                                    <ControlLabel>Name please ...</ControlLabel>
+                                                    <FormControl
+                                                        type="text"
+                                                        placeholder="Name here..."
+                                                        value={this.state.selectedName}
+                                                        onChange={this.modalonChange('selectedName')}
+                                                        />
+                                                    <HelpBlock>use to identify you</HelpBlock>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <ControlLabel>Choose Favorite Color</ControlLabel>
+                                                    <FormControl componentClass="select"
+                                                                placeholder="Color here..."
+                                                                value={this.state.selectedColor}
+                                                                onChange={this.modalonChange('selectedColor')}
+                                                        >
+                                                        <option value="red">Red</option>
+                                                        <option value="green">Green</option>
+                                                        <option value="blue">Blue</option>
+                                                    </FormControl>
+                                                    <HelpBlock>use to identify you</HelpBlock>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <ControlLabel>Favorite Movies </ControlLabel>
+                                                    <Checkbox value="harry potter"
+                                                            checked={this.state.selectedMovies.indexOf('harry potter')>=0 ? true:false}
+                                                            onChange={this.modalcheckboxChange('selectedMovies')}>
+                                                        Harry Potter
+                                                    </Checkbox>
+                                                    <Checkbox value="lotr"
+                                                            checked={this.state.selectedMovies.indexOf('lotr')>=0 ? true:false}
+                                                            onChange={this.modalcheckboxChange('selectedMovies')}>
+                                                        Lord of the Rings
+                                                    </Checkbox>
+                                                    <Checkbox value="twilight"
+                                                            checked={this.state.selectedMovies.indexOf('twilight')>=0 ? true:false}
+                                                            onChange={this.modalcheckboxChange('selectedMovies')}>
+                                                        Twilight
+                                                    </Checkbox>
+                                                </FormGroup>
+                                                <FormGroup>
+                                                    <ControlLabel>Gender </ControlLabel>
+                                                    <Radio name="selectedGender" value="male" checked={this.state.selectedGender == "male" ? true : false}
+                                                        onChange={this.modalonChange('selectedGender')}>Male</Radio>
+                                                    <Radio name="selectedGender" value="female" checked={this.state.selectedGender == "female" ? true : false}
+                                                        onChange={this.modalonChange('selectedGender')}>Female</Radio>
+                                                </FormGroup>
+                                                <ButtonGroup>
 
-        <Modal
-          show={this.state.show}
-          onHide={close}
-          container={this}
-          aria-labelledby="contained-modal-title"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title">Contained Modal</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-           <Form>
-                                    <FormGroup>
-                                        <ControlLabel>Name please ...</ControlLabel>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Name here..."
-                                            value={this.state.name}
-                                            onChange={this.onChange('name')}
-                                            />
-                                        <HelpBlock>use to identify you</HelpBlock>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <ControlLabel>Choose Favorite Color</ControlLabel>
-                                        <FormControl componentClass="select"
-                                                     placeholder="Color here..."
-                                                     value={this.state.color}
-                                                     onChange={this.onChange('color')}
-                                            >
-                                            <option value="red">Red</option>
-                                            <option value="green">Green</option>
-                                            <option value="blue">Blue</option>
-                                        </FormControl>
-                                        <HelpBlock>use to identify you</HelpBlock>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <ControlLabel>Favorite Movies </ControlLabel>
-                                        <Checkbox value="harry potter"
-                                                  checked={this.state.movies.indexOf('harry potter')>=0 ? true:false}
-                                                  onChange={this.checkboxChange('movies')}>
-                                            Harry Potter
-                                        </Checkbox>
-                                        <Checkbox value="lotr"
-                                                  checked={this.state.movies.indexOf('lotr')>=0 ? true:false}
-                                                  onChange={this.checkboxChange('movies')}>
-                                            Lord of the Rings
-                                        </Checkbox>
-                                        <Checkbox value="twilight"
-                                                  checked={this.state.movies.indexOf('twilight')>=0 ? true:false}
-                                                  onChange={this.checkboxChange('movies')}>
-                                            Twilight
-                                        </Checkbox>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <ControlLabel>Gender </ControlLabel>
-                                        <Radio name="gender" value="male"
-                                               onChange={this.onChange('gender')}>Male</Radio>
-                                        <Radio name="gender" value="female"
-                                               onChange={this.onChange('gender')}>Female</Radio>
-                                    </FormGroup>
-                                    <ButtonGroup>
+                                                    <Button bsStyle="primary" onClick={this.saveEdit(this.state.selectedId)}>Save Survey</Button>
 
-                                        <Button bsStyle="primary" onClick={this.saveSurvey}>Save Survey</Button>
-
-                                    </ButtonGroup>
-                                </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={close}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
+                                                </ButtonGroup>
+                                            </Form>
+                            </Modal.Body>
+                        </Modal>
+                        </div>
             </div>
         );
     }

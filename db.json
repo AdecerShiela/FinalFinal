@@ -1,36 +1,22 @@
 {
   "surveys": [
     {
-      "name": "",
-      "color": "",
-      "movies": [],
-      "gender": "",
-      "show": false,
-      "id": 4
+      "name": "gemini",
+      "color": "red",
+      "gender": "female",
+      "movies": [
+        "harry potter",
+        "lotr",
+        "twilight"
+      ],
+      "id": 1
     },
     {
-      "name": "",
+      "name": "balda",
       "color": "",
-      "movies": [],
       "gender": "",
-      "show": false,
-      "id": 5
-    },
-    {
-      "name": "",
-      "color": "",
       "movies": [],
-      "gender": "",
-      "show": true,
-      "id": 6
-    },
-    {
-      "name": "",
-      "color": "",
-      "movies": [],
-      "gender": "",
-      "show": true,
-      "id": 7
+      "id": 2
     }
   ]
 }
