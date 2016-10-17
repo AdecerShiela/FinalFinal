@@ -2,4 +2,22 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #e8feff;
+
+  
+}
+.header{
+
+font-size: 490%;
+font-family: Verdana, Geneva, Tahoma, sans-serif;
+color: white;
+font-weight: normal;
+font-style: normal;
+text-align: center;
+margin-top: 0px;
+background-color: #ffb6a2;
+word-wrap: break-word;
+
+border-radius: 14px;
+text-shadow: 7px 7px 7px black;
 }

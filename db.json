@@ -1,21 +1,27 @@
 {
   "surveys": [
     {
-      "name": "gemini",
-      "color": "red",
-      "gender": "female",
+      "name": "AWd",
+      "Course": "asg",
+      "Subject": "Javascript",
+      "Status": "Programming",
+      "gender": "3-Satisfactory",
+      "suggest": "sapot",
       "movies": [
-        "harry potter",
-        "lotr",
-        "twilight"
+        "Angie Garde"
       ],
       "id": 1
     },
     {
-      "name": "balda",
-      "color": "",
-      "gender": "",
-      "movies": [],
+      "name": "af",
+      "Course": "sv",
+      "Subject": "DBMS",
+      "Status": "Programming",
+      "gender": "2-VerySatisFactory",
+      "suggest": "sapot",
+      "movies": [
+        "Albert Oclarit"
+      ],
       "id": 2
     }
   ]
